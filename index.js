@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
@@ -9,7 +10,7 @@ const server = http.createServer(app);
 app.use(cors());
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000", // Replace with your React app's URL
+    origin: process.env.CLIENT_ADDRESS, // Replace with your React app's URL
     methods: ["GET", "POST"],
   },
 });
