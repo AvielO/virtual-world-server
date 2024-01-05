@@ -46,6 +46,17 @@ io.on("connection", (socket) => {
       io.emit("updatePlayers", players);
     }
   });
+
+  socket.on("sendMessage", (newMessage) => {
+    const index = players.findIndex((player) => player.id === newMessage.id);
+    if (index !== -1) {
+      io.emit("messageSent", {
+        message: newMessage.message,
+        x: players[index].x,
+        y: players[index].y,
+      });
+    }
+  });
 });
 
 const PORT = process.env.PORT || 3001;
