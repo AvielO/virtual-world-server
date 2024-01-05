@@ -38,32 +38,23 @@ io.on("connection", (socket) => {
   });
 
   socket.on("playerMoved", (playerNewPosition) => {
-    const index = players.findIndex(
+    const playerIndex = players.findIndex(
       (player) => player.id === playerNewPosition.id
     );
-    if (index !== -1) {
-      players.splice(index, 1, playerNewPosition);
-      io.emit("updatePlayers", players);
+
+    if (playerIndex !== -1) {
+      players.splice(playerIndex, 1, playerNewPosition);
+      io.emit("updatePlayers", players, players[playerIndex]);
     }
   });
 
-  socket.on("sendMessage", (messages, socketId, newMessage) => {
-    messages[socketId] = newMessage;
-    if (socketId in messages) {
-      const index = players.findIndex(
-        (player) => player.id === messages[socketId].id
-      );
-      if (index !== -1) {
-        io.emit("messageSent", {
-          id: messages[socketId].id,
-          message: messages[socketId].message,
-          x: players[index].x,
-          y: players[index].y,
-        });
-      }
-    } else {
-      console.log("Something wrong!");
-    }
+  socket.on("sendMessage", (messages, playerData, newMessage) => {
+    messages[playerData.id] = {
+      message: newMessage,
+      x: playerData.x,
+      y: playerData.y,
+    };
+    io.emit("messageSent", messages);
   });
 });
 
