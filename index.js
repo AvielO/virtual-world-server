@@ -47,14 +47,22 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("sendMessage", (newMessage) => {
-    const index = players.findIndex((player) => player.id === newMessage.id);
-    if (index !== -1) {
-      io.emit("messageSent", {
-        message: newMessage.message,
-        x: players[index].x,
-        y: players[index].y,
-      });
+  socket.on("sendMessage", (messages, socketId, newMessage) => {
+    messages[socketId] = newMessage;
+    if (socketId in messages) {
+      const index = players.findIndex(
+        (player) => player.id === messages[socketId].id
+      );
+      if (index !== -1) {
+        io.emit("messageSent", {
+          id: messages[socketId].id,
+          message: messages[socketId].message,
+          x: players[index].x,
+          y: players[index].y,
+        });
+      }
+    } else {
+      console.log("Something wrong!");
     }
   });
 });
