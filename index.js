@@ -32,7 +32,12 @@ io.on("connection", (socket) => {
     const idExists = players.some((player) => player.id === socket.id);
     if (!idExists) {
       console.log("New Player emitted");
-      players.push({ id: socket.id, x: playerData.x, y: playerData.y });
+      players.push({
+        id: socket.id,
+        username: playerData.username,
+        x: playerData.x,
+        y: playerData.y,
+      });
       io.emit("updatePlayers", players);
     }
   });
@@ -54,7 +59,7 @@ io.on("connection", (socket) => {
       x: playerData.x,
       y: playerData.y,
     };
-    io.emit("messageSent", messages);
+    io.emit("messageSent", messages, playerData);
   });
 });
 
